@@ -32,6 +32,7 @@ export default () => {
                 <AreaCard
                   key={values.codigo_are}
                   headerTitle={values.descripcion_are}
+                  areaId={values.codigo_are}
                 />
               );
             })}

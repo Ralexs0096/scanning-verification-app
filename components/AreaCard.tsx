@@ -4,9 +4,10 @@ import { Button, Card, Paragraph, XStack } from 'tamagui';
 
 type AreaCardProps = {
   headerTitle: string;
+  areaId: string;
 };
 
-const AreaCard = ({ headerTitle }: AreaCardProps) => {
+const AreaCard = ({ headerTitle, areaId }: AreaCardProps) => {
   return (
     <Card size="$4" bordered w="100%" mb="$1.5">
       <Card.Header padded>
@@ -14,7 +15,13 @@ const AreaCard = ({ headerTitle }: AreaCardProps) => {
       </Card.Header>
       <Card.Footer padded>
         <XStack flex={1} />
-        <Link href="/area" asChild>
+        <Link
+          href={{
+            pathname: '/[area]',
+            params: { area: areaId, name: headerTitle }
+          }}
+          asChild
+        >
           <Button borderRadius="$10">Auditar</Button>
         </Link>
       </Card.Footer>
