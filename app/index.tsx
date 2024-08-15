@@ -28,7 +28,12 @@ export default () => {
             flex={1}
           >
             {areas?.map((values) => {
-              return <AreaCard headerTitle={values.descripcion_are} />;
+              return (
+                <AreaCard
+                  key={values.codigo_are}
+                  headerTitle={values.descripcion_are}
+                />
+              );
             })}
           </YStack>
         </ScrollView>
