@@ -1,22 +1,38 @@
-import { TamaguiProvider, createTamagui } from '@tamagui/core';
-
-import { config } from '@tamagui/config/v3';
 import Textfield from '@/components/Textfield';
-import { YStack } from 'tamagui';
+import { ScrollView, Text, YStack, Spinner } from 'tamagui';
+import { useGetAllAreas } from '@/query-hooks/useGetAllAreas';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AreaCard from '@/components/AreaCard';
 
-const tamaguiConfig = createTamagui(config);
-
-type Conf = typeof tamaguiConfig;
-
-declare module '@tamagui/core' {
-  interface TamaguiCustomConfig extends Conf {}
-}
 export default () => {
+  const { data: areas, isLoading } = useGetAllAreas();
+
   return (
-    <TamaguiProvider config={tamaguiConfig}>
-      <YStack minHeight={250} overflow="hidden" margin="$3" padding="$2">
+    <SafeAreaView style={{ flex: 1 }}>
+      <YStack minHeight={80} overflow="hidden" margin="$3" padding="$2">
         <Textfield size={32} />
       </YStack>
-    </TamaguiProvider>
+
+      {isLoading && !areas ? (
+        <Spinner size="large" color="$orange10" />
+      ) : (
+        <ScrollView
+          backgroundColor="$background"
+          padding="$4"
+          borderRadius="$4"
+        >
+          <YStack
+            flexWrap="wrap"
+            alignItems="center"
+            justifyContent="center"
+            flex={1}
+          >
+            {areas?.map((values) => {
+              return <AreaCard headerTitle={values.descripcion_are} />;
+            })}
+          </YStack>
+        </ScrollView>
+      )}
+    </SafeAreaView>
   );
 };
