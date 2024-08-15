@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import React from 'react';
 import { Button, Card, Paragraph, XStack } from 'tamagui';
 
@@ -13,7 +14,9 @@ const AreaCard = ({ headerTitle }: AreaCardProps) => {
       </Card.Header>
       <Card.Footer padded>
         <XStack flex={1} />
-        <Button borderRadius="$10">Auditar</Button>
+        <Link href="/area" asChild>
+          <Button borderRadius="$10">Auditar</Button>
+        </Link>
       </Card.Footer>
     </Card>
   );
