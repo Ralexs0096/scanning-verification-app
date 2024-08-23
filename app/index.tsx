@@ -1,5 +1,5 @@
 import Textfield from '@/components/Textfield';
-import { ScrollView, Text, YStack, Spinner } from 'tamagui';
+import { ScrollView, Text, YStack, Spinner, Paragraph } from 'tamagui';
 import { useGetAllAreas } from '@/query-hooks/useGetAllAreas';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AreaCard from '@/components/AreaCard';
@@ -13,7 +13,7 @@ export default () => {
         <Textfield size={32} />
       </YStack>
 
-      {isLoading && !areas ? (
+      {isLoading ? (
         <Spinner size="large" color="$orange10" />
       ) : (
         <ScrollView
@@ -27,15 +27,22 @@ export default () => {
             justifyContent="center"
             flex={1}
           >
-            {areas?.map((values) => {
-              return (
-                <AreaCard
-                  key={values.codigo_are}
-                  headerTitle={values.descripcion_are}
-                  areaId={values.codigo_are}
-                />
-              );
-            })}
+            {!areas ? (
+              <Paragraph>
+                Algo salió mal... La información de las areas no puede ser
+                mostrada
+              </Paragraph>
+            ) : (
+              areas?.map((values) => {
+                return (
+                  <AreaCard
+                    key={values.areaId}
+                    headerTitle={values.name}
+                    areaId={values.areaId}
+                  />
+                );
+              })
+            )}
           </YStack>
         </ScrollView>
       )}
