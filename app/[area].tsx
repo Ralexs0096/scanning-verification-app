@@ -1,21 +1,111 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Paragraph } from 'tamagui';
+import { Paragraph, ScrollView, View, YStack } from 'tamagui';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { StyleSheet, Text, Button } from 'react-native';
 
 export default () => {
   const { area, name } = useLocalSearchParams();
   const navigation = useNavigation();
 
+  const [permission, requestPermission] = useCameraPermissions();
+  const [scanned, setScanned] = useState(false);
+  const [userCodes, setUserCodes] = useState<Array<string>>([]);
+  const cameraRef = useRef<CameraView | null>(null);
+
   useEffect(() => {
     navigation.setOptions({ headerShown: true, title: name });
   }, [navigation]);
 
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>
+          We need your permission to show the camera
+        </Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
+  const handleBarCodeScanned = ({ data }: { data: string }) => {
+    setScanned(true);
+
+    setUserCodes([...new Set([...userCodes, data])]);
+
+    setTimeout(() => setScanned(false), 3000); // Re-enable scanning after 3 seconds
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Paragraph theme="alt1">
-        Area: {name} ({area})
-      </Paragraph>
+      <View style={styles.container}>
+        <CameraView
+          ref={cameraRef}
+          style={styles.camera}
+          facing="back"
+          onMagicTap={() => console.log('tap')}
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barcodeScannerSettings={{
+            barcodeTypes: ['code128']
+          }}
+        >
+          <View style={styles.buttonContainer}></View>
+        </CameraView>
+      </View>
+      <ScrollView backgroundColor="$background" padding="$4" borderRadius="$4">
+        <YStack
+          flexWrap="wrap"
+          alignItems="center"
+          justifyContent="center"
+          flex={1}
+        >
+          {userCodes.length === 0 ? (
+            <Paragraph>No se han agregado códigos de usuario</Paragraph>
+          ) : (
+            userCodes?.map((code) => {
+              return <Paragraph key={code}>{code}</Paragraph>;
+            })
+          )}
+        </YStack>
+      </ScrollView>
     </SafeAreaView>
   );
 };
+
+// TODO: change this to Tamagui, it was taken from expo documentation
+const styles = StyleSheet.create({
+  container: {
+    height: '50%',
+    justifyContent: 'center'
+  },
+  message: {
+    textAlign: 'center',
+    paddingBottom: 10
+  },
+  camera: {
+    flex: 1
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64
+  },
+  button: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    alignItems: 'center'
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white'
+  }
+});
