@@ -33,7 +33,7 @@ export default () => {
                 mostrada
               </Paragraph>
             ) : (
-              areas?.map((values) => {
+              areas?.slice(0, 19).map((values) => {
                 return (
                   <AreaCard
                     key={values.areaId}
