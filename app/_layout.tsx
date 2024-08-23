@@ -2,7 +2,7 @@ import { config } from '@tamagui/config/v3';
 import { createTamagui, TamaguiProvider } from '@tamagui/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useEffect } from 'react';
 
 const tamaguiConfig = createTamagui(config);
@@ -34,7 +34,14 @@ export default () => {
   return (
     <TamaguiProvider config={tamaguiConfig}>
       <QueryClientProvider client={queryClient}>
-        <Slot />
+        <Stack
+          screenOptions={{
+            headerShown: false
+          }}
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen name="[area]" getId={({ params }) => params?.areaId} />
+        </Stack>
       </QueryClientProvider>
     </TamaguiProvider>
   );
