@@ -1,11 +1,15 @@
-import { Text } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Paragraph } from 'tamagui';
 
 export default () => {
   const { area, name } = useLocalSearchParams();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({ headerShown: true, title: name });
+  }, [navigation]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
