@@ -10,6 +10,7 @@ export default () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <YStack minHeight={80} overflow="hidden" margin="$3" padding="$2">
+        // TODO: implement the search by area
         <Textfield size={32} />
       </YStack>
 
