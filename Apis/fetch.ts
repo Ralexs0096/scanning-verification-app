@@ -13,6 +13,6 @@ export const fetchBase = ({
     method,
     headers: {
       'Content-type': 'application/json'
-    }
-    // body: JSON.stringify(data)
+    },
+    ...(!!data && { body: JSON.stringify(data) })
   });
