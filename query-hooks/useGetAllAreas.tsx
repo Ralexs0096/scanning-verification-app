@@ -1,3 +1,4 @@
+import { DEFAULT_STALE_TIME } from '@/Apis/constants';
 import { fetchBase } from '@/Apis/fetch';
 import { useQuery } from '@tanstack/react-query';
 
@@ -17,5 +18,5 @@ export const useGetAllAreas = () =>
   useQuery<Array<AreasResponse>>({
     queryKey: ['allAreas'],
     queryFn: fetchAllAreas,
-    staleTime: 60 * 1000 * 60
+    staleTime: DEFAULT_STALE_TIME
   });
