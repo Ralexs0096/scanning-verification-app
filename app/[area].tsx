@@ -91,8 +91,22 @@ export default () => {
     setTimeout(() => setScanned(false), 3000); // Re-enable scanning after 3 seconds
   };
 
+  const verifyUsers = () => {
+    // TODO: implement verification logic
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Button
+        size="$4"
+        variant="outlined"
+        backgroundColor="tomato"
+        color="white"
+        m={8}
+        onPress={verifyUsers}
+      >
+        Verificar
+      </Button>
       <View height="50%" justifyContent="center">
         <CameraView
           ref={cameraRef}
