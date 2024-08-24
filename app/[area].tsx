@@ -11,7 +11,9 @@ export default () => {
 
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
-  const [userScanned, setUserScanned] = useState<Array<UserByIdResponse>>([]);
+  const [usersScanned, setUsersScanned] = useState<
+    Array<UserByIdResponse & { code: string }>
+  >([]);
   const cameraRef = useRef<CameraView | null>(null);
 
   useEffect(() => {
@@ -70,13 +72,13 @@ export default () => {
     const code = data;
 
     if (result) {
-      setUserScanned((prev) => [...prev, { ...result, code }]);
+      setUsersScanned((prev) => [...prev, { ...result, code }]);
     } else {
       /**
        * if the user doesn't exist on the DB,
        * we will put a placeholder indicating the `codigo_emp`
        */
-      setUserScanned((prev) => [
+      setUsersScanned((prev) => [
         ...prev,
         {
           cedula_id: code,
@@ -109,10 +111,10 @@ export default () => {
           justifyContent="center"
           flex={1}
         >
-          {userScanned.length === 0 ? (
+          {usersScanned.length === 0 ? (
             <Paragraph>No se han agregado códigos de usuario</Paragraph>
           ) : (
-            userScanned.map(({ cedula_id, nombre_completo }) => {
+            usersScanned.map(({ cedula_id, nombre_completo }) => {
               return <Paragraph key={cedula_id}>{nombre_completo}</Paragraph>;
             })
           )}
