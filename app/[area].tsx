@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Paragraph, ScrollView, View, YStack } from 'tamagui';
+import { Dialog, Paragraph, ScrollView, View, YStack, Button } from 'tamagui';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { StyleSheet, Text, Button } from 'react-native';
 
 export default () => {
   const { area, name } = useLocalSearchParams();
@@ -18,16 +17,46 @@ export default () => {
     navigation.setOptions({ headerShown: true, title: name });
   }, [navigation]);
 
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
-
-  if (!permission.granted) {
+  if (!permission?.granted) {
     // Camera permissions are not granted yet.
     return (
-      // Define buttons permission
-      <></>
+      <Dialog modal open>
+        <Dialog.Portal>
+          <Dialog.Overlay
+            key="overlay"
+            animation="slow"
+            opacity={0.5}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+
+          <Dialog.Content
+            bordered
+            elevate
+            key="content"
+            animateOnly={['transform', 'opacity']}
+            animation={[
+              'quicker',
+              {
+                opacity: {
+                  overshootClamping: true
+                }
+              }
+            ]}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            gap="$4"
+          >
+            <Paragraph>
+              Para realizar esta acción, se requieren permisos para acceder a la
+              cámara
+            </Paragraph>
+            <Button size="$3" variant="outlined" onPress={requestPermission}>
+              Permitir
+            </Button>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog>
     );
   }
 
