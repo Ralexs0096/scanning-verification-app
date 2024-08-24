@@ -26,12 +26,8 @@ export default () => {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
+      // Define buttons permission
+      <></>
     );
   }
 
@@ -45,19 +41,16 @@ export default () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+      <View height="50%" justifyContent="center">
         <CameraView
           ref={cameraRef}
-          style={styles.camera}
+          style={{ flex: 1 }}
           facing="back"
-          onMagicTap={() => console.log('tap')}
           onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
           barcodeScannerSettings={{
             barcodeTypes: ['code128']
           }}
-        >
-          <View style={styles.buttonContainer}></View>
-        </CameraView>
+        />
       </View>
       <ScrollView backgroundColor="$background" padding="$4" borderRadius="$4">
         <YStack
@@ -78,34 +71,3 @@ export default () => {
     </SafeAreaView>
   );
 };
-
-// TODO: change this to Tamagui, it was taken from expo documentation
-const styles = StyleSheet.create({
-  container: {
-    height: '50%',
-    justifyContent: 'center'
-  },
-  message: {
-    textAlign: 'center',
-    paddingBottom: 10
-  },
-  camera: {
-    flex: 1
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center'
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white'
-  }
-});
