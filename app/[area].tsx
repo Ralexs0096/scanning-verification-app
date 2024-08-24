@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Dialog, Paragraph, ScrollView, View, YStack, Button } from 'tamagui';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { fetchUserById } from '@/Apis';
 
 export default () => {
   const { area, name } = useLocalSearchParams();
@@ -10,7 +11,7 @@ export default () => {
 
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
-  const [userCodes, setUserCodes] = useState<Array<string>>([]);
+  const [userScanned, setUserScanned] = useState<Array<UserByIdResponse>>([]);
   const cameraRef = useRef<CameraView | null>(null);
 
   useEffect(() => {
@@ -60,10 +61,30 @@ export default () => {
     );
   }
 
-  const handleBarCodeScanned = ({ data }: { data: string }) => {
+  const handleBarCodeScanned = async ({ data }: { data: string }) => {
     setScanned(true);
 
-    setUserCodes([...new Set([...userCodes, data])]);
+    const result = await fetchUserById(data);
+
+    /** `code` represents the union of `codigo_emp` and `codigo_ec` */
+    const code = data;
+
+    if (result) {
+      setUserScanned((prev) => [...prev, { ...result, code }]);
+    } else {
+      /**
+       * if the user doesn't exist on the DB,
+       * we will put a placeholder indicating the `codigo_emp`
+       */
+      setUserScanned((prev) => [
+        ...prev,
+        {
+          cedula_id: code,
+          nombre_completo: `Usuario no encontrado - ${code}`,
+          code
+        }
+      ]);
+    }
 
     setTimeout(() => setScanned(false), 3000); // Re-enable scanning after 3 seconds
   };
@@ -88,11 +109,11 @@ export default () => {
           justifyContent="center"
           flex={1}
         >
-          {userCodes.length === 0 ? (
+          {userScanned.length === 0 ? (
             <Paragraph>No se han agregado códigos de usuario</Paragraph>
           ) : (
-            userCodes?.map((code) => {
-              return <Paragraph key={code}>{code}</Paragraph>;
+            userScanned.map(({ cedula_id, nombre_completo }) => {
+              return <Paragraph key={cedula_id}>{nombre_completo}</Paragraph>;
             })
           )}
         </YStack>
