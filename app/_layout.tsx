@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
+import { PortalProvider } from 'tamagui';
 
 const tamaguiConfig = createTamagui(config);
 
@@ -33,16 +34,21 @@ export default () => {
 
   return (
     <TamaguiProvider config={tamaguiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <Stack
-          screenOptions={{
-            headerShown: false
-          }}
-        >
-          <Stack.Screen name="index" />
-          <Stack.Screen name="[area]" getId={({ params }) => params?.areaId} />
-        </Stack>
-      </QueryClientProvider>
+      <PortalProvider shouldAddRootHost>
+        <QueryClientProvider client={queryClient}>
+          <Stack
+            screenOptions={{
+              headerShown: false
+            }}
+          >
+            <Stack.Screen name="index" />
+            <Stack.Screen
+              name="[area]"
+              getId={({ params }) => params?.areaId}
+            />
+          </Stack>
+        </QueryClientProvider>
+      </PortalProvider>
     </TamaguiProvider>
   );
 };
