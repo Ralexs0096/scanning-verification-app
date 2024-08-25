@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Dialog, Paragraph, ScrollView, View, YStack, Button } from 'tamagui';
+import { Paragraph, ScrollView, View, YStack, Button } from 'tamagui';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import RequestPermissions from '@/components/RequestPermissions';
 import { fetchUserById } from '@/Apis';
 
 export default () => {
@@ -22,45 +23,7 @@ export default () => {
 
   if (!permission?.granted) {
     // Camera permissions are not granted yet.
-    return (
-      <Dialog modal open>
-        <Dialog.Portal>
-          <Dialog.Overlay
-            key="overlay"
-            animation="slow"
-            opacity={0.5}
-            enterStyle={{ opacity: 0 }}
-            exitStyle={{ opacity: 0 }}
-          />
-
-          <Dialog.Content
-            bordered
-            elevate
-            key="content"
-            animateOnly={['transform', 'opacity']}
-            animation={[
-              'quicker',
-              {
-                opacity: {
-                  overshootClamping: true
-                }
-              }
-            ]}
-            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
-            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
-            gap="$4"
-          >
-            <Paragraph>
-              Para realizar esta acción, se requieren permisos para acceder a la
-              cámara
-            </Paragraph>
-            <Button size="$3" variant="outlined" onPress={requestPermission}>
-              Permitir
-            </Button>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog>
-    );
+    return <RequestPermissions handleOnPress={requestPermission} />;
   }
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
