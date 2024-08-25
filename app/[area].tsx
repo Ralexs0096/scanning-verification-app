@@ -7,7 +7,7 @@ import RequestPermissions from '@/components/RequestPermissions';
 import { fetchUserById } from '@/Apis';
 
 export default () => {
-  const { area, name } = useLocalSearchParams();
+  const { area, name } = useLocalSearchParams<{ area: string; name: string }>();
   const navigation = useNavigation();
 
   const [permission, requestPermission] = useCameraPermissions();
@@ -51,7 +51,7 @@ export default () => {
       ]);
     }
 
-    setTimeout(() => setScanned(false), 3000); // Re-enable scanning after 3 seconds
+    setTimeout(() => setScanned(false), 2000); // Re-enable scanning after 2 seconds
   };
 
   const verifyUsers = () => {
