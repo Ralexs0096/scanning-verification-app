@@ -4,7 +4,7 @@ import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Paragraph, ScrollView, View, YStack, Button } from 'tamagui';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import RequestPermissions from '@/components/RequestPermissions';
-import { fetchUserById } from '@/Apis';
+import { fetchUserById, verifyCodesByArea } from '@/Apis';
 
 export default () => {
   const { area, name } = useLocalSearchParams<{ area: string; name: string }>();
@@ -54,8 +54,14 @@ export default () => {
     setTimeout(() => setScanned(false), 2000); // Re-enable scanning after 2 seconds
   };
 
-  const verifyUsers = () => {
-    // TODO: implement verification logic
+  const verifyUsers = async () => {
+    try {
+      const userCodes = usersScanned.map((user) => user.code);
+      const result = await verifyCodesByArea(area, userCodes);
+    } catch (error) {
+      // TODO: Add error message on a snackbar or something similar
+      console.log(error);
+    }
   };
 
   return (
