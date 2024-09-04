@@ -3,15 +3,21 @@ import { ScrollView, Text, YStack, Spinner, Paragraph } from 'tamagui';
 import { useGetAllAreas } from '@/query-hooks/useGetAllAreas';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AreaCard from '@/components/AreaCard';
+import { useState } from 'react';
 
 export default () => {
   const { data: areas, isLoading } = useGetAllAreas();
 
+  const [searchInput, SetSearchInput] = useState('');
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <YStack minHeight={80} overflow="hidden" margin="$3" padding="$2">
-        {/* TODO: implement the search by area */}
-        <Textfield size={32} />
+        <Textfield
+          size={32}
+          onTextChange={SetSearchInput}
+          value={searchInput}
+        />
       </YStack>
 
       {isLoading ? (
@@ -35,15 +41,17 @@ export default () => {
               </Paragraph>
             ) : (
               // TODO: implement recent areas filtered
-              areas?.slice(0, 19).map((values) => {
-                return (
-                  <AreaCard
-                    key={values.areaId}
-                    headerTitle={values.name}
-                    areaId={values.areaId}
-                  />
-                );
-              })
+              <>
+                {areas?.slice(0, 19).map((values) => {
+                  return (
+                    <AreaCard
+                      key={values.areaId}
+                      headerTitle={values.name}
+                      areaId={values.areaId}
+                    />
+                  );
+                })}
+              </>
             )}
           </YStack>
         </ScrollView>
