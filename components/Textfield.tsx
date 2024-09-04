@@ -16,7 +16,6 @@ const Textfield = (props: {
         onChangeText={(text) => props.onTextChange(text)}
         value={props.value}
       />
-      <Button size={props.size}>Buscar</Button>
     </XStack>
   );
 };
