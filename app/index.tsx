@@ -1,5 +1,5 @@
 import Textfield from '@/components/Textfield';
-import { ScrollView, Text, YStack, Spinner, Paragraph } from 'tamagui';
+import { ScrollView, YStack, Spinner, Paragraph } from 'tamagui';
 import { useGetAllAreas } from '@/query-hooks/useGetAllAreas';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AreaCard from '@/components/AreaCard';
@@ -40,17 +40,32 @@ export default () => {
                 mostrada
               </Paragraph>
             ) : (
-              // TODO: implement recent areas filtered
               <>
-                {areas?.slice(0, 19).map((values) => {
-                  return (
-                    <AreaCard
-                      key={values.areaId}
-                      headerTitle={values.name}
-                      areaId={values.areaId}
-                    />
-                  );
-                })}
+                {!searchInput
+                  ? areas?.slice(0, 19).map((values) => {
+                      return (
+                        <AreaCard
+                          key={values.areaId}
+                          headerTitle={values.name}
+                          areaId={values.areaId}
+                        />
+                      );
+                    })
+                  : areas?.map((area) => {
+                      if (
+                        area.name
+                          .toLowerCase()
+                          .includes(searchInput.toLowerCase())
+                      ) {
+                        return (
+                          <AreaCard
+                            key={area.areaId}
+                            headerTitle={area.name}
+                            areaId={area.areaId}
+                          />
+                        );
+                      }
+                    })}
               </>
             )}
           </YStack>
