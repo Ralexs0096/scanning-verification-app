@@ -13,7 +13,7 @@ export default () => {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [usersScanned, setUsersScanned] = useState<
-    Array<UserByIdResponse & { code: string }>
+    Array<UserByIdResponse & { code: string; belongsTo?: boolean }>
   >([]);
   const cameraRef = useRef<CameraView | null>(null);
 
@@ -58,6 +58,26 @@ export default () => {
     try {
       const userCodes = usersScanned.map((user) => user.code);
       const result = await verifyCodesByArea(area, userCodes);
+
+      if (result) {
+        setUsersScanned((prevUsers) =>
+          prevUsers.map((user) => {
+            const normalizedUserCode = user.code
+              .trim()
+              .slice(0, 6)
+              .toLowerCase();
+
+            const verification = result.find(
+              (res) => res.code.trim().toLowerCase() === normalizedUserCode
+            );
+
+            return {
+              ...user,
+              belongsTo: !!verification?.belongsToThisArea
+            };
+          })
+        );
+      }
     } catch (error) {
       // TODO: Add error message on a snackbar or something similar
       console.log(error);
@@ -97,8 +117,21 @@ export default () => {
           {usersScanned.length === 0 ? (
             <Paragraph>No se han agregado códigos de usuario</Paragraph>
           ) : (
-            usersScanned.map(({ cedula_id, nombre_completo }) => {
-              return <Paragraph key={cedula_id}>{nombre_completo}</Paragraph>;
+            usersScanned.map(({ cedula_id, nombre_completo, belongsTo }) => {
+              return (
+                <Paragraph
+                  key={cedula_id}
+                  color={
+                    belongsTo === undefined
+                      ? 'black'
+                      : belongsTo
+                      ? 'green'
+                      : 'red'
+                  }
+                >
+                  {nombre_completo}
+                </Paragraph>
+              );
             })
           )}
         </YStack>
