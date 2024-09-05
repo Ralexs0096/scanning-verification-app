@@ -34,6 +34,9 @@ export default () => {
     /** `code` represents the union of `codigo_emp` and `codigo_ec` */
     const code = data;
 
+    // before update the state we need to check if the user was already scanned
+    if (usersScanned.find((it) => it.cedula_id === result?.cedula_id)) return;
+
     if (result) {
       setUsersScanned((prev) => [...prev, { ...result, code }]);
     } else {
@@ -51,7 +54,7 @@ export default () => {
       ]);
     }
 
-    setTimeout(() => setScanned(false), 2000); // Re-enable scanning after 2 seconds
+    setTimeout(() => setScanned(false), 1000); // Re-enable scanning after 1 seconds
   };
 
   const verifyUsers = async () => {
