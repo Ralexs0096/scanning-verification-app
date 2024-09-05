@@ -15,6 +15,7 @@ export default () => {
   const [usersScanned, setUsersScanned] = useState<
     Array<UserByIdResponse & { code: string; belongsTo?: boolean }>
   >([]);
+  const [isAlreadyVerified, setIsAlreadyVerified] = useState(false);
   const cameraRef = useRef<CameraView | null>(null);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ export default () => {
             };
           })
         );
+        setIsAlreadyVerified(true);
       }
     } catch (error) {
       // TODO: Add error message on a snackbar or something similar
@@ -96,6 +98,8 @@ export default () => {
         color="white"
         m={8}
         onPress={verifyUsers}
+        disabled={isAlreadyVerified}
+        disabledStyle={{ backgroundColor: 'gray' }}
       >
         Verificar
       </Button>
